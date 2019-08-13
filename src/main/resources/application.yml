@@ -1,0 +1,12 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: consulAdmin
+
+#consul agent
+consul:
+  ip: 10.10.38.195
+  port: 8500
