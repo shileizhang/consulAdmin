@@ -17,7 +17,8 @@ public class ConsulAdminStarter {
         //返回某个节点的所有service(一般不用这个)  /v1/agent/services
         System.out.println(ecwidConsulService.getAgentServices());
         //    /v1/catalog/services
-        //System.out.println(ecwidConsulService.getCatalogServices(null));
+        System.out.println("catalogServices");
+        System.out.println(ecwidConsulService.getCatalogServices(null));
         //返回所有check都通过的service  /v1/health/service/thrift-calculator-rest-server onlyPassing=true
         System.out.println(ecwidConsulService.findHealthyService("thrift-calculator-rpc-server", true));
         //获取consul所有节点  "/v1/catalog/nodes"

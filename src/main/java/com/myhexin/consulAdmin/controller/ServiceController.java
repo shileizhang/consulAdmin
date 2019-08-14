@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 /**
  * 增，删，查 service
  * NewService  CatalogService HealthService
@@ -45,8 +45,8 @@ public class ServiceController {
      *
      * 获取agent所有的service:     (list service: /v1/agent/services)
      * */
-    @RequestMapping(value = "/getAllServices",method = RequestMethod.GET)
-    public ResultDTO getAllServices(){
+    @RequestMapping(value = "/getAllAgentServices",method = RequestMethod.GET)
+    public ResultDTO getAllAgentServices(){
         //Map<String, Service> getAgentServices()
         Map<String, Service> map=consulService.getAgentServices();
         return ResultFactory.success(map);
@@ -58,8 +58,8 @@ public class ServiceController {
      * 返回根据serviceName找到的service:  CatalogService  ("/v1/catalog/service/" + serviceName)   !!! 包含Service的Node信息
     * */
     @RequestMapping(value = "/getCatalogService",method = RequestMethod.GET)
-    public ResultDTO getCatalogService(String serviceName, QueryParams queryParams){
-        List<CatalogService> list=consulService.getCatalogService(serviceName, queryParams);
+    public ResultDTO getCatalogService(String serviceName){
+        List<CatalogService> list=consulService.getCatalogService(serviceName, null);
         return ResultFactory.success(list);
     }
 
@@ -77,6 +77,20 @@ public class ServiceController {
     public ResultDTO findHealthyService(String serviceName,boolean onlyPassing){
         List<HealthService> list= consulService.findHealthyService(serviceName,onlyPassing);
         return ResultFactory.success(list);
+    }
+    @RequestMapping(value = "/allServiceInfo",method = RequestMethod.GET)
+    public ResultDTO allServiceInfo(){
+        Map<String,List<String>> map=consulService.getCatalogServices(null);
+        Set<String> serviceNames=map.keySet();
+        Iterator<String> iterator=serviceNames.iterator();
+        String serviceName;
+        Map<String,List<HealthService>> allServiceInfo=new HashMap<>();
+        while(iterator.hasNext()){
+            serviceName=iterator.next();
+            List<HealthService> list=consulService.findHealthyService(serviceName,false);
+            allServiceInfo.put(serviceName,list);
+        }
+        return ResultFactory.success(allServiceInfo);
     }
 
 }
